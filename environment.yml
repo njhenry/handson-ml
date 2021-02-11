@@ -1,6 +1,5 @@
-name: tf1
+name: mlbook
 channels:
-  - conda-forge
   - defaults
 dependencies:
   - graphviz
