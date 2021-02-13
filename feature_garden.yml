@@ -1,0 +1,148 @@
+matplotlib:
+  pyplot:
+    cm:
+      NOTE: Color maps for other functions
+      gray: Grays
+    matshow(ndarray, cmap=some_color_scale): Plot an ndarray as a grid
+
+
+numpy:
+  argmax(array): Get the index for the max value in the array
+  c_[]: np.See column_stack()
+  column_stack([[1,2,3], [4,5,6]]): Returns np.ndarray( [[1,4], [2,5], [3,6]] )
+  r_[[1,2], [3,4,5], [6]]: Returns np.array([1,2,3,4,5,6])
+  fill_diagonal(ndarray, new_val): Fills diagonals of (square) ndarray with new_val
+  sqrt(myval): Square root of myval
+
+  ndarray:
+    reshape(nrow, ncol): Reshape a 1-d array to a new set of dimensions
+
+  random:
+    permutation(some_integer): Shuffled index from 0 to (max-1). Good for shuffling pandas dfs
+    seed(some_integer): Set a random seed for reproducibility
+
+
+pandas:
+
+  DataFrame:
+    corr(): Returns DF of correlation across each series
+    describe(): Get summary statistics for each field
+    info(): Get series type information for each field
+    DataFrame Plotting:
+      hist(): Plot histograms for all numeric series
+      plot(kind='scatter', x='a', y='b'): Scatter plot - vignette p. 55
+      scatter_matrix(): See pd.plotting.scatter_matrix()
+
+  Series:
+    factorize(): Converts a character ('object') field to unique integers.
+    where(sr_condition, new_val): Returns series, with new_val in indices where sr_condition is True
+
+  plotting:
+    scatter_matrix(df): Plot scatter matrix with histograms on diagonals
+
+
+sklearn:
+
+  base:
+    BaseEstimator: Use as parent class for custom estimators
+    clone(model): Deep copy of model object
+    TransformerMixin: Use as parent class (in addition to BaseEstimator) to get fit_transform() method
+
+  datasets:
+    fetch_mldata('description'): Fetch dataset from mldata.org, cache in $HOME/scikit_learn_data
+
+  ensemble (estimators):
+    RandomForestClassifier(random_state=some_int):
+      NOTE: Can be used for multi-classification without OneVsRestClassifier
+      fit(X_train, y_train): Fit a random forest classifier
+      predict(X_test): Predict classifications for new values
+      decision_function(): Get scoring for each classification result
+      predict_proba(y_index): Get the RF estimated probability of sorting into each classifier
+
+  externals:
+    joblib:
+      NOTE: joblib is now an external library
+      dump(my_model, out_fp): Saves model in .pkl file format
+
+  linear_model (estimators):
+    SGDClassifier(random_state=some_int):
+      fit(X_train, y_train): Fits a stochastic gradient descent classifier
+      predict(y_test): Predict out to new data
+      decision_function([index]): Get the classifier score for a given index. Useful for PR and ROC curves
+
+  metrics:
+    confusion_matrix(y, y_hat): Return ndarray with rows = true categories, cols = pred categories
+    f1_score(y, y_hat): For classifiers harmonic mean of precision and recall = 2/(1/prec + 1/recall)
+    mean_absolute_error(y, y_hat): Returns scalar MAE
+    mean_squared_error(y, y_hat): Returns a scalar MSE comparing arrays y and y_hat
+    precision_recall_curve(y_train, y_scores): Get (precs, recalls, thresholds) tuple to plot PR curve. Uses scores from a_clf.decision_function()
+    precision_score(y, y_hat): Get classifier precision = TP/(TP+FP)
+    recall_score(y, y_hat): Get classifier recall = sensitivity = TP/(TP+FN)
+    roc_auc_score(y_train, y_scores): Get AUC for a classifier. Uses scores from a_clf.decision_function()
+    roc_curve(y_train, y_scores): Get (fpr, tpr, thresholds) tuple to plot ROC curve. Uses scores from a_clf.decision_function()
+
+  model_selection:
+    cross_val_score(my_model, X, labs, scoring='neg_mean_squared_error', cv=10): Returns list of 10 OOSCV scores
+    GridSearchCV(my_model, param_grid={...}, cv=5, scoring='neg_mean_squared_error'):
+      fit(X_train, labs): Find the best combination of model hyperparams in the param_grid
+      best_params_: Get the best parameters found in fit()
+      cv_results_: Get the scoring for all parameters combos, where HIGHER scores are better
+      best_estimator_: Returns the estimator with values set to best_params_
+      best_estimator_.feature_importances_: Get relative importance of each feature in a fit estimator
+    RandomizedSearchCV(...): Similar to GridSearchCV, but hops around hyperparam space
+    StratifiedKFold(n_splits=some_int, random_state=other_int):
+      split(X_train, y_train): Return (train_idx, test_idx) using stratified sampling. Good for custom cross-validation
+    train_test_split(df, test_size=0.2, random_state=42): Returns (train_set, test_set)
+
+  multiclass:
+    OneVsOneClassifier(ClassifierCall(...)):
+      NOTE: Turn a single-class classifier into multi-class using OvO method (preferred for SVMs)
+      estimators_: How many submodels were run? Should = Nclass*(Nclass-1)/2
+    OneVsRestClassifier(ClassifierCall(...)):
+      NOTE: Turn a single-class classifier into multi-class (preferred for most classifiers)
+      estimators_: How many submodels were run? Should = Nclass
+
+  neighbors:
+    KNeighborsClassifier():
+      fit(X_train, y_train_multilabel): Fit a K nearest neighbors classifier, with optional multiclass fitting
+
+  pipeline:
+    FeatureUnion(transformer_list=[...]):
+      fit_transform(): Runs list of ('name', Transformer() or Pipeline()) steps in parallel and combines
+    Pipeline([...]):
+      fit(): Runs a list of ('step name', Transformer()) tuples in order, only runs fit() on last step
+      fit_transform(): Runs all in order, running fit_transform() on last step
+
+  preprocessing:
+    Imputer(strategy='median'):
+      NOTE: In sklearn > 0.20, this is in sklearn.imputer.SimpleImputer
+      fit_transform(ndarray): fit() = impute values, transform() = fill missing in original dataset
+      statistics_: Attribute giving the fit() result for each numeric field
+    OneHotEncoder():
+      NOTE: In sklearn > 0.20
+      fit_transform(): Convert an object() Series into a sparse matrix of 'one-hot' fields
+      categories_: The labels assigned to each 'one-hot' column in the output sparse matrix
+    OneHotEncoder():
+      fit_transform(): Convert an categorical integer series into a sparse matrix of 'one-hot' fields
+    StandardScaler():
+      fit_transform(): Transform each input variable to be distributed ~ N(0, 1)
+
+  svm (estimators):
+    SVR(kernel='rbf'): Support vector machine regressor. Kernels include 'linear', 'rbf', etc
+
+  tree (estimators):
+    DecisionTreeRegressor():
+      fit(X_train, labs): Fit a decision tree
+      predict(X_test): Model predictions given a set of numeric covariates
+    RandomForestRegressor(): Fit a random forest
+
+
+tarfile:
+  open(zip_path).extractall(out_dir): Extract a zipped tgz file to an output folder
+
+urllib:
+  request:
+    urlretrieve(from_url, to_filepath): Seems to work similar to wget or curl
+
+zlib:
+  crc32: Hashing nonsense
